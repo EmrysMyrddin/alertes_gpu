@@ -4,6 +4,11 @@ import * as mailjet from './mailjet.js'
 const SCRAP_INTERVAL = parseInt(process.env.SCRAP_INTERVAL) || 60
 const CHROME_HEADLESS = process.env.CHROME_HEADLESS !== 'false';
 
+const chromeOptions = {
+    headless: CHROME_HEADLESS,
+    args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
+}
+
 ['SIGTERM', 'SIGINT', 'SIGUSR1', 'SIGUSR2'].forEach(signal => process.on(signal, () => process.exit(0)))
 main().catch(err => console.error('Fatal error:', err))
 
@@ -12,7 +17,7 @@ async function main() {
     while(true) {
         console.time('scrapping time')
         console.info('\nscrapping started')
-        const browser = await puppeteer.launch({headless: CHROME_HEADLESS})
+        const browser = await puppeteer.launch(chromeOptions)
         await scrapAll(browser).finally(() => browser.close())
         console.timeEnd('scrapping time')
         await waitFor(SCRAP_INTERVAL)
