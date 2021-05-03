@@ -7,7 +7,7 @@ const CHROME_HEADLESS = process.env.CHROME_HEADLESS !== 'false';
 const chromeOptions = {
     headless: CHROME_HEADLESS,
     args: ['--no-sandbox', '--disable-setuid-sandbox', '--disable-dev-shm-usage']
-}
+};
 
 ['SIGTERM', 'SIGINT', 'SIGUSR1', 'SIGUSR2'].forEach(signal => process.on(signal, () => process.exit(0)))
 main().catch(err => console.error('Fatal error:', err))

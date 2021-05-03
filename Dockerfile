@@ -25,4 +25,4 @@ RUN yarn
 
 COPY . .
 
-CMD ['yarn', 'start']
+ENTRYPOINT yarn start
