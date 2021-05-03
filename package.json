@@ -1,0 +1,19 @@
+{
+  "name": "alertes_gpu",
+  "type": "module",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "node .",
+    "dev": "nodemon -r dotenv/config ."
+  },
+  "dependencies": {
+    "node-mailjet": "^3.3.1",
+    "puppeteer": "^9.0.0"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "nodemon": "^2.0.7"
+  }
+}
