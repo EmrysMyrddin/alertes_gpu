@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
-    "dev": "nodemon -r dotenv/config ."
+    "dev": "nodemon -r dotenv/config .",
+    "deploy": "caprover deploy -n cocaud-dev -a alertes-gpu -b main"
   },
   "dependencies": {
     "node-mailjet": "^3.3.1",
