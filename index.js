@@ -43,9 +43,8 @@ async function ldlc(page) {
     await page.goto("https://www.ldlc.com/informatique/pieces-informatique/carte-graphique-interne/c4684/+fdi-1+fv1026-5801+fv121-19183,19184.html")
     // await page.goto("https://www.ldlc.com/informatique/pieces-informatique/carte-graphique-interne/c4684/+fv1026-5801+fv121-19183,19184.html")
 
-    if(await contains(page, 'Aucun produit ne correspond à vos critères.')) return []
-
     return getProducts(page, 'https://www.ldlc.com', {
+        outOfStock: 'Aucun produit ne correspond à vos critères.',
         product: '.listing-product .pdt-item',
         link: '.pdt-desc a',
         price: '.price'
@@ -57,9 +56,8 @@ async function topAchat(page) {
     await page.goto('https://www.topachat.com/pages/produits_cat_est_micro_puis_rubrique_est_wgfx_pcie_puis_ordre_est_P_puis_sens_est_ASC_puis_f_est_58-11447,11445|s-1.html')
     // await page.goto('https://www.topachat.com/pages/produits_cat_est_micro_puis_rubrique_est_wgfx_pcie_puis_ordre_est_P_puis_sens_est_ASC_puis_f_est_58-11447,11445.html')
 
-    if(await contains(page, 'Il n’y a aucun article correspondant aux valeurs de filtres que vous avez choisies.')) return []
-
     return getProducts(page, 'https://www.topachat.com', {
+        outOfStock: 'Il n’y a aucun article correspondant aux valeurs de filtres que vous avez choisies.',
         product: '.produits.list .grille-produit',
         link: '.libelle a:not(.avis)',
         name: '.libelle a:not(.avis) h3',
@@ -72,9 +70,8 @@ async function materielNet(page) {
     await page.goto('https://www.materiel.net/carte-graphique/l426/+fdi-1+fv121-19183,19184/')
     // await page.goto('https://www.materiel.net/carte-graphique/l426/+fv121-19183,19184/')
 
-    if(await contains(page, 'Aucun article ne correspond')) return []
-
     return getProducts(page, 'https://www.materiel.net', {
+        outOfStock: 'Aucun article ne correspond',
         product: 'ul.c-products-list .c-products-list__item',
         link: '.c-product__meta a.c-product__link',
         price: '.o-product__prices'
@@ -104,24 +101,26 @@ async function makeScrapper(browser) {
 
 /**
  * @param {puppeteer.Page} page
+ * @param {string} linkPrefix
+ * @param {ProductSelector} selector
+ * @returns {Promise<puppeteer.WrapElementHandle<Result[]>>}
+ */
+async function getProducts(page, linkPrefix, selector) {
+    if(await contains(page, selector.outOfStock)) return []
+    const results = await page.$$eval(selector.product, getProductsInfo, linkPrefix, selector)
+    if (results.length === 0) console.error(`[${page.name}]`, 'Products list should not be empty if stock detected !')
+    else console.info(`[${page.name}] found ${results.length} products`)
+    return results
+}
+
+/**
+ * @param {puppeteer.Page} page
  * @param {string | Regexp} text
  * @returns {Promise<boolean>}
  * */
 async function contains(page, text) {
     const content = await page.content()
     return Boolean(content.match(text))
-}
-
-/**
- * @param {puppeteer.Page} page
- * @param {string} linkPrefix
- * @param {ProductSelector} selector
- * @returns {Promise<puppeteer.WrapElementHandle<Result[]>>}
- */
-async function getProducts(page, linkPrefix, selector) {
-    const results = await page.$$eval(selector.product, getProductsInfo, linkPrefix, selector)
-    console.info(`[${page.name}] found ${results.length} products`)
-    return results
 }
 
 /**
@@ -157,4 +156,5 @@ function waitFor(delay) {
  * @property {string} link
  * @property {string} name
  * @property {string} price
+ * @property {string} outOfStock
  */
