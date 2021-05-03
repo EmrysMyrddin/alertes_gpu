@@ -38,10 +38,12 @@ async function scrapAll(browser) {
 
 // SCRAPPERS
 
+const {LDLC_URL, TOP_ACHAT_URL, MATERIEL_NET_URL} = process.env
+
 /** @param {puppeteer.Page} page */
 async function ldlc(page) {
-    await page.goto("https://www.ldlc.com/informatique/pieces-informatique/carte-graphique-interne/c4684/+fdi-1+fv1026-5801+fv121-19183,19184.html")
-    // await page.goto("https://www.ldlc.com/informatique/pieces-informatique/carte-graphique-interne/c4684/+fv1026-5801+fv121-19183,19184.html")
+    if(!LDLC_URL) return []
+    await page.goto(LDLC_URL)
 
     return getProducts(page, 'https://www.ldlc.com', {
         outOfStock: 'Aucun produit ne correspond à vos critères.',
@@ -53,8 +55,8 @@ async function ldlc(page) {
 
 /** @param {puppeteer.Page} page */
 async function topAchat(page) {
-    await page.goto('https://www.topachat.com/pages/produits_cat_est_micro_puis_rubrique_est_wgfx_pcie_puis_ordre_est_P_puis_sens_est_ASC_puis_f_est_58-11447,11445|s-1.html')
-    // await page.goto('https://www.topachat.com/pages/produits_cat_est_micro_puis_rubrique_est_wgfx_pcie_puis_ordre_est_P_puis_sens_est_ASC_puis_f_est_58-11447,11445.html')
+    if(!TOP_ACHAT_URL) return []
+    await page.goto(TOP_ACHAT_URL)
 
     return getProducts(page, 'https://www.topachat.com', {
         outOfStock: 'Il n’y a aucun article correspondant aux valeurs de filtres que vous avez choisies.',
@@ -67,8 +69,8 @@ async function topAchat(page) {
 
 /** @param {puppeteer.Page} page */
 async function materielNet(page) {
-    await page.goto('https://www.materiel.net/carte-graphique/l426/+fdi-1+fv121-19183,19184/')
-    // await page.goto('https://www.materiel.net/carte-graphique/l426/+fv121-19183,19184/')
+    if(!MATERIEL_NET_URL) return []
+    await page.goto(MATERIEL_NET_URL)
 
     return getProducts(page, 'https://www.materiel.net', {
         outOfStock: 'Aucun article ne correspond',
